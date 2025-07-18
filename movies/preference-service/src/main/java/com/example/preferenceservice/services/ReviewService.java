@@ -18,10 +18,6 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public List<Review> findByUserId(Long userId) {
-        return this.reviewRepository.findByUserId(userId);
-    }
-
     public Review save(InputCreateReviewDto reviewDto) {
         Review review = Review.builder()
                 .movieId(reviewDto.getMovieId())
@@ -29,6 +25,18 @@ public class ReviewService {
                 .userId(reviewDto.getUserId())
                 .build();
         return this.reviewRepository.save(review);
+    }
+
+    public PageableResponse<OutputReviewDto> getReviewsByUserId(Long userId, Pageable pageable) {
+        Page<Review> userReviewsPerPage = this.reviewRepository.findByUserId(userId, pageable);
+        List<OutputReviewDto> userReviewsDtoPerPage = userReviewsPerPage.getContent().stream().map(OutputReviewDto::fromEntity).toList();
+                PageableMetadata pageableMetadata = new PageableMetadata(
+                userReviewsPerPage.getNumber(),
+                userReviewsPerPage.getSize(),
+                userReviewsPerPage.getTotalElements(),
+                userReviewsPerPage.getTotalPages()
+        );
+        return new PageableResponse<>(userReviewsDtoPerPage, pageableMetadata);
     }
 
     public PageableResponse<OutputReviewDto> getAllReviews(Pageable pageable) {

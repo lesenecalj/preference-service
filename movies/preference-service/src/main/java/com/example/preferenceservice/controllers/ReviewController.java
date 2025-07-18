@@ -6,7 +6,6 @@ import com.example.preferenceservice.dtos.response.PageableResponse;
 import com.example.preferenceservice.models.Review;
 import com.example.preferenceservice.services.ReviewService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +26,17 @@ public class ReviewController {
         return OutputReviewDto.fromEntity(review);
     }
 
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<PageableResponse<OutputReviewDto>> getReviewsByUserId(
+            @PathVariable("userId") Long userId,
+            Pageable pageable
+    ) {
+        PageableResponse<OutputReviewDto> allReviews = this.reviewService.getReviewsByUserId(userId, pageable);
+        return ResponseEntity.ok(allReviews);
+    }
+
     @GetMapping("/")
-    public ResponseEntity<PageableResponse<OutputReviewDto>> getAllReviews(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public ResponseEntity<PageableResponse<OutputReviewDto>> getAllReviews(Pageable pageable) {
         PageableResponse<OutputReviewDto> allReviews = this.reviewService.getAllReviews(pageable);
         return ResponseEntity.ok(allReviews);
     }
