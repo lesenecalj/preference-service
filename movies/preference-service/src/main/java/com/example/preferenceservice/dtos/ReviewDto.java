@@ -1,19 +1,22 @@
 package com.example.preferenceservice.dtos;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import com.example.preferenceservice.models.Review;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
+
+import java.util.UUID;
 
 @Data
-public class ReviewDto {
-    @NotNull(message = "userId is required")
-    private Long userId;
+@SuperBuilder()
+public class ReviewDto extends CreateReviewDto {
+    private UUID id;
 
-    @NotNull(message = "movieId is required")
-    private String MovieId;
-
-    @NotNull(message = "review is required")
-    @Min(0) @Max(10)
-    private Float review;
+    public static ReviewDto fromEntity(Review review) {
+        return ReviewDto.builder()
+                .userId(review.getUserId())
+                .movieId(review.getMovieId())
+                .review(review.getReview())
+                .id(review.getId())
+                .build();
+    }
 }
