@@ -1,4 +1,4 @@
-package com.example.preferenceservice.response;
+package com.example.preferenceservice.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

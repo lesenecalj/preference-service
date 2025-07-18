@@ -8,11 +8,11 @@ import java.util.UUID;
 
 @Data
 @SuperBuilder()
-public class ReviewDto extends CreateReviewDto {
+public class OutputReviewDto extends InputCreateReviewDto {
     private UUID id;
 
-    public static ReviewDto fromEntity(Review review) {
-        return ReviewDto.builder()
+    public static OutputReviewDto fromEntity(Review review) {
+        return OutputReviewDto.builder()
                 .userId(review.getUserId())
                 .movieId(review.getMovieId())
                 .review(review.getReview())
