@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class PageableResponse<T> {
+public class PageableOutputResponse<T> {
     private List<T> data;
     private PageableMetadata pageableMetadata;
 }

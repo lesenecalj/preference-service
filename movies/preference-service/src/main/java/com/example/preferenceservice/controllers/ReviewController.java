@@ -2,8 +2,8 @@ package com.example.preferenceservice.controllers;
 
 import com.example.preferenceservice.dtos.InputCreateReviewDto;
 import com.example.preferenceservice.dtos.OutputReviewDto;
-import com.example.preferenceservice.dtos.response.PageableResponse;
-import com.example.preferenceservice.models.Review;
+import com.example.preferenceservice.dtos.response.OutputResponse;
+import com.example.preferenceservice.dtos.response.PageableOutputResponse;
 import com.example.preferenceservice.services.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -21,23 +21,23 @@ public class ReviewController {
     }
 
     @PostMapping("/")
-    public OutputReviewDto save(@Valid() @RequestBody() InputCreateReviewDto input) {
-        Review review = this.reviewService.save(input);
-        return OutputReviewDto.fromEntity(review);
+    public ResponseEntity<OutputResponse<OutputReviewDto>> save(@Valid() @RequestBody() InputCreateReviewDto input) {
+        OutputResponse<OutputReviewDto> createdUserDto = this.reviewService.save(input);
+        return ResponseEntity.ok(createdUserDto);
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<PageableResponse<OutputReviewDto>> getReviewsByUserId(
+    public ResponseEntity<PageableOutputResponse<OutputReviewDto>> getReviewsByUserId(
             @PathVariable("userId") Long userId,
             Pageable pageable
     ) {
-        PageableResponse<OutputReviewDto> allReviews = this.reviewService.getReviewsByUserId(userId, pageable);
+        PageableOutputResponse<OutputReviewDto> allReviews = this.reviewService.getReviewsByUserId(userId, pageable);
         return ResponseEntity.ok(allReviews);
     }
 
     @GetMapping("/")
-    public ResponseEntity<PageableResponse<OutputReviewDto>> getAllReviews(Pageable pageable) {
-        PageableResponse<OutputReviewDto> allReviews = this.reviewService.getAllReviews(pageable);
+    public ResponseEntity<PageableOutputResponse<OutputReviewDto>> getAllReviews(Pageable pageable) {
+        PageableOutputResponse<OutputReviewDto> allReviews = this.reviewService.getAllReviews(pageable);
         return ResponseEntity.ok(allReviews);
     }
 }
