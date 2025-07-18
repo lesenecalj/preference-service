@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder()
-public class CreateReviewDto {
+public class InputCreateReviewDto {
     @NotNull(message = "userId is required")
     private Long userId;
 
