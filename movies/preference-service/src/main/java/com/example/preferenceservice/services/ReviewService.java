@@ -2,10 +2,11 @@ package com.example.preferenceservice.services;
 
 import com.example.preferenceservice.dtos.InputCreateReviewDto;
 import com.example.preferenceservice.dtos.OutputReviewDto;
+import com.example.preferenceservice.dtos.response.OutputResponse;
 import com.example.preferenceservice.models.Review;
 import com.example.preferenceservice.repositories.ReviewRepository;
 import com.example.preferenceservice.dtos.response.PageableMetadata;
-import com.example.preferenceservice.dtos.response.PageableResponse;
+import com.example.preferenceservice.dtos.response.PageableOutputResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,16 +19,17 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public Review save(InputCreateReviewDto reviewDto) {
+    public OutputResponse<OutputReviewDto> save(InputCreateReviewDto reviewDto) {
         Review review = Review.builder()
                 .movieId(reviewDto.getMovieId())
                 .review(reviewDto.getReview())
                 .userId(reviewDto.getUserId())
                 .build();
-        return this.reviewRepository.save(review);
+        Review createdReview = this.reviewRepository.save(review);
+        return new OutputResponse<>(OutputReviewDto.fromEntity(createdReview));
     }
 
-    public PageableResponse<OutputReviewDto> getReviewsByUserId(Long userId, Pageable pageable) {
+    public PageableOutputResponse<OutputReviewDto> getReviewsByUserId(Long userId, Pageable pageable) {
         Page<Review> userReviewsPerPage = this.reviewRepository.findByUserId(userId, pageable);
         List<OutputReviewDto> userReviewsDtoPerPage = userReviewsPerPage.getContent().stream().map(OutputReviewDto::fromEntity).toList();
                 PageableMetadata pageableMetadata = new PageableMetadata(
@@ -36,10 +38,10 @@ public class ReviewService {
                 userReviewsPerPage.getTotalElements(),
                 userReviewsPerPage.getTotalPages()
         );
-        return new PageableResponse<>(userReviewsDtoPerPage, pageableMetadata);
+        return new PageableOutputResponse<>(userReviewsDtoPerPage, pageableMetadata);
     }
 
-    public PageableResponse<OutputReviewDto> getAllReviews(Pageable pageable) {
+    public PageableOutputResponse<OutputReviewDto> getAllReviews(Pageable pageable) {
         Page<Review> reviewsPerPage = this.reviewRepository.findAll(pageable);
         List<OutputReviewDto> reviews = reviewsPerPage.getContent().stream().map(OutputReviewDto::fromEntity).toList();
         PageableMetadata pageableMetadata = new PageableMetadata(
@@ -48,6 +50,6 @@ public class ReviewService {
                 reviewsPerPage.getTotalElements(),
                 reviewsPerPage.getTotalPages()
         );
-        return new PageableResponse<>(reviews, pageableMetadata);
+        return new PageableOutputResponse<>(reviews, pageableMetadata);
     }
 }
